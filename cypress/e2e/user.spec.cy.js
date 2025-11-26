@@ -1,16 +1,21 @@
 import userData from '../fixtures/userData.json'
+import LoginPage from '../pages/loginPage'
+import DashboardPage from '../pages/dashboardPage'
+import MenuPage from '../pages/menupage'
+
+const loginPage = new LoginPage()
+const dashboardPage = new DashboardPage()
+const menupage = new MenuPage()
+
 
 
 describe('Orange HRM Tests', () => {
 
   const selectorsList = {
-   usernameField: "[name='username']",
-   passwordField: "[name='password']",
-   loginButton: "[type='submit']",
-   sectionTitleTopBar: ".oxd-topbar-header-breadcrumb",
-   dashboardGrid: ".orangehrm-dashboard-grid",
-   wrongCredentialAlert: "[role='alert']",
-   myInfoButton: "[href='/web/index.php/pim/viewMyDetails']",
+  
+   
+   
+   
    firstNameField: "[name='firstName']",
    lastNameField: "[name='lastName']",
    genericField: ".oxd-input",
@@ -18,19 +23,26 @@ describe('Orange HRM Tests', () => {
    closeButtonDate: ".--close",
    saveButton: "[type='submit']",
    saveMessage: ".oxd-toast-container--bottom",
-   closeButtonSave: ".oxd-toast-close"
-  
+   closeButtonSave: ".oxd-toast-close",
+   sectionCountryEndStatus: "[clear='false']",
+   countrySelect: ".oxd-select-dropdown > :nth-child(4)",
+   maritalStatusSelect: ".oxd-select-dropdown > :nth-child(3)",
+   genderTest: ".oxd-radio-input",
+   bloodType: "[tabindex='0']",
+   selectBloodType: ".oxd-select-dropdown > :nth-child(6)"
+
   }
     
-  it.only('User info - Sucesse', () => {
+  it('User info - Sucesse', () => {
 
-    cy.visit('/auth/login')
-    cy.get(selectorsList.usernameField).type(userData.userSucess.username)
-    cy.get(selectorsList.passwordField).type(userData.userSucess.password)
-    cy.get(selectorsList.loginButton).click()
-    cy.location('pathname').should('equal', '/web/index.php/dashboard/index')
-    cy.get(selectorsList.dashboardGrid)
-    cy.get(selectorsList.myInfoButton).click()
+    loginPage.acessLoginPage()
+    loginPage.loginWithUser(userData.userSucess.username, userData.userSucess.password)
+    dashboardPage.checkDashboard()
+    menupage.infoCheck()
+    
+    
+    
+    
     cy.get(selectorsList.firstNameField).clear().type('LEONARDO')
     cy.get(selectorsList.lastNameField).clear().type('TESTER')
     cy.get(selectorsList.genericField).eq(4).clear().type("EmployeeId")
@@ -41,23 +53,33 @@ describe('Orange HRM Tests', () => {
     cy.get(selectorsList.closeButtonDate).click()
     cy.get(selectorsList.calendaryField).eq(1).clear().type('2021-18-1')
     cy.get(selectorsList.closeButtonDate).click()
-    cy.get(selectorsList.saveButton).eq(0).click()
-    // cy.get(selectorsList.saveButton).eq(1).click() segundo botão de salvar
-    cy.get(selectorsList.saveMessage)
-    cy.get('body').should('contain', 'Successfully Updated')
-    cy.get(selectorsList.closeButtonSave).click()
+    cy.get(selectorsList.saveButton).eq(0).click() // primeiro botão que salva
+    cy.get('body').should('contain', 'Successfully Updated') // encontra o texto depois que clicou em salvar
+    cy.get(selectorsList.saveMessage) // verifica por outro elemento a mensagem de salvar
+    cy.get(selectorsList.closeButtonSave).click() // primeiro close botão que fecha o balão dizendo que salvou
+    
+    
+    cy.get(selectorsList.sectionCountryEndStatus).eq(0).click()
+    cy.get(selectorsList.countrySelect).click()
+    cy.get(selectorsList.sectionCountryEndStatus).eq(1).click()
+    cy.get(selectorsList.maritalStatusSelect).click()
+    cy.get(selectorsList.genderTest).eq(1).click()
+    cy.get(selectorsList.bloodType).eq(2).click()
+    cy.get(selectorsList.selectBloodType).click()
+    cy.get(selectorsList.saveButton).eq(1).click() //segundo botão de salvar
+    cy.get(selectorsList.closeButtonSave).click() // segundo close botão que fecha o balão dizendo que salvou */
+    
     
    
 
 
   })
-    it('Login - Fail', () => {
+    it.skip('Login - Fail', () => {
 
-      cy.visit('/auth/login')
-      cy.get(selectorsList.usernameField).type(userData.userFail.username)
-      cy.get(selectorsList.passwordField).type(userData.userFail.password)
-      cy.get(selectorsList.loginButton).click()
-      cy.get(selectorsList.wrongCredentialAlert)
+      loginPage.acessLoginPage()
+      loginPage.loginWithUser(userData.userFail.username, userData.userFail.password)
+      
+     
     })
   
  })
