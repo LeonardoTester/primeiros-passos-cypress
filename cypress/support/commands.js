@@ -23,3 +23,8 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+
+Cypress.on('window:before:load', (win) => {
+  // impede o Cypress de navegar pra about:blank
+  delete win.navigator.__proto__.serviceWorker
+})
